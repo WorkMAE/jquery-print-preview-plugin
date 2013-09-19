@@ -68,24 +68,9 @@ jQuery.browser.msie = /msie/.test(navigator.userAgent.toLowerCase());
             $iframe_head.each(function() {
                 $(this).attr('media', 'all');
             });
-<<<<<<< HEAD
-            if (!$.browser.msie && !($.browser.version < 7) ) {
                 $('head', print_frame_ref).append($iframe_head);
                 $('body', print_frame_ref).append($iframe_body);
-            }
-            else {
-                $('body > *:not(#print-modal):not(script)').clone().each(function() {
-                    $('body', print_frame_ref).append(this.outerHTML);
-                });
-                $('head link[media*=print], head link[media=all]').each(function() {
-                    $('head', print_frame_ref).append($(this).clone().attr('media', 'all')[0].outerHTML);
-                });
-            }
-=======
-                $('head', print_frame_ref).append($iframe_head);
-                $('body', print_frame_ref).append($iframe_body);
->>>>>>> origin/master
-            
+           
             // Disable all links
             $('a', print_frame_ref).bind('click.printPreview', function(e) {
                 e.preventDefault();
