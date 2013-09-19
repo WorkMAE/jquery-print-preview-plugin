@@ -1,6 +1,12 @@
 # jQuery Print Preview plugin
+## 9-18-13 Updates
+- Updated correct for $.browser being deprecated in jQuery 1.9 (side-effect: removed support for IE 7 & below)
+- Updated demo file to use jQuery 1.10.2 & removed carousel which was dependent on the jquerytools library that was previously being used. 
+
 The jQuery Print Preview plugin is designed to provide visitors with a preview of the print version of a web site.
 Unlike traditional print previews this plugin brings in all content and print styles within a modal window.
+
+[Check out the demo](http://briceshatzer.github.com/jquery-print-preview-plugin/example/index.html)
 
 ## Usage
 Prerequisites:
@@ -8,20 +14,23 @@ Prerequisites:
 - [jQuery](http://jquery.com/)
 - A print stylesheeet with a media="print" attribute
 
-Add a print preview link and initalise the plugin like so
+Using the plugin:
 
-``$('#foo').prepend('Print this page');
-$('a.print-preview').printPreview();``
+1. Pour in plugin CSS
+2. Add a print preview link and initalise the plugin like so
+
+    ``$('#foo').prepend('Print this page');
+    $('a.print-preview').printPreview();``
 
 ## Supported Browsers
-- Internet Explorer 6, 7, 8 and 9
+- Internet Explorer 8, 9, and 10
 - Safari
 - Google Chrome
 - Firefox
 
 ## Authors
 Developed by Tim Connell.
-Released in conjunction with [Design Festival](http://designfestival.com/).
+Released in conjunction with [Sitepoint/Design Festival](http://designfestival.com/when-visitors-print-about-that-print-stylesheet/).
 
 ## Licence
 Copyright 2011, Tim Connell

@@ -9,6 +9,12 @@
  */
  
 (function($) { 
+//replaces $.browser functionality that was deprecated in jQuery 1.9
+jQuery.browser = {};
+jQuery.browser.mozilla = /mozilla/.test(navigator.userAgent.toLowerCase()) && !/webkit/.test(navigator.userAgent.toLowerCase());
+jQuery.browser.webkit = /webkit/.test(navigator.userAgent.toLowerCase());
+jQuery.browser.opera = /opera/.test(navigator.userAgent.toLowerCase());
+jQuery.browser.msie = /msie/.test(navigator.userAgent.toLowerCase());    
     
     // Initialization
     $.fn.printPreview = function() {
@@ -62,6 +68,7 @@
             $iframe_head.each(function() {
                 $(this).attr('media', 'all');
             });
+<<<<<<< HEAD
             if (!$.browser.msie && !($.browser.version < 7) ) {
                 $('head', print_frame_ref).append($iframe_head);
                 $('body', print_frame_ref).append($iframe_body);
@@ -74,6 +81,10 @@
                     $('head', print_frame_ref).append($(this).clone().attr('media', 'all')[0].outerHTML);
                 });
             }
+=======
+                $('head', print_frame_ref).append($iframe_head);
+                $('body', print_frame_ref).append($iframe_body);
+>>>>>>> origin/master
             
             // Disable all links
             $('a', print_frame_ref).bind('click.printPreview', function(e) {
