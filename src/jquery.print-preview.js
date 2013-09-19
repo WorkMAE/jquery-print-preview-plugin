@@ -9,30 +9,33 @@
  */
  
 (function($) { 
-//replaces $.browser functionality that was deprecated in jQuery 1.9
 jQuery.browser = {};
 jQuery.browser.mozilla = /mozilla/.test(navigator.userAgent.toLowerCase()) && !/webkit/.test(navigator.userAgent.toLowerCase());
 jQuery.browser.webkit = /webkit/.test(navigator.userAgent.toLowerCase());
 jQuery.browser.opera = /opera/.test(navigator.userAgent.toLowerCase());
-jQuery.browser.msie = /msie/.test(navigator.userAgent.toLowerCase());    
+jQuery.browser.msie = /msie/.test(navigator.userAgent.toLowerCase());
     
-	// Initialization
-	$.fn.printPreview = function() {
-		this.each(function() {
-			$(this).bind('click', function(e) {
-			    e.preventDefault();
-			    if (!$('#print-modal').length) {
-			        $.printPreview.loadPrintPreview();
-			    }
-			});
-		});
-		return this;
-	};
+    // Initialization
+    $.fn.printPreview = function() {
+        this.each(function() {
+            $(this).bind('click', function(e) {
+                e.preventDefault();
+                if (!$('#print-modal').length) {
+                    $.printPreview.loadPrintPreview();
+                }
+            });
+        });
+        return this;
+    };
     
     // Private functions
     var mask, size, print_modal, print_controls;
     $.printPreview = {
         loadPrintPreview: function() {
+            // Fix some things
+            $('body').css('height', 'auto');
+            $('#logo>a>img').attr('src', '/images/print-logo.png');
+            $('#supportLine').html('<p><strong>Links Technology Solutions Inc</strong> <br />440 E State Pkwy <br />Schaumburg, IL 60173<br /> <em>Support: <strong>847-252-1611</strong></em></p>');
             // Declare DOM objects
             print_modal = $('<div id="print-modal"></div>');
             print_controls = $('<div id="print-modal-controls">' + 
@@ -70,8 +73,7 @@ jQuery.browser.msie = /msie/.test(navigator.userAgent.toLowerCase());
             });
                 $('head', print_frame_ref).append($iframe_head);
                 $('body', print_frame_ref).append($iframe_body);
-            
-            // Disable all links
+           
             $('a', print_frame_ref).bind('click.printPreview', function(e) {
                 e.preventDefault();
             });
@@ -119,70 +121,73 @@ jQuery.browser.msie = /msie/.test(navigator.userAgent.toLowerCase());
                 if ($(this).hasClass('print')) { window.print(); }
                 else { $.printPreview.distroyPrintPreview(); }
             });
-    	},
-    	
-    	distroyPrintPreview: function() {
-    	    print_controls.fadeOut(100);
-    	    print_modal.animate({ top: $(window).scrollTop() - $(window).height(), opacity: 1}, 400, 'linear', function(){
-    	        print_modal.remove();
-    	        $('body').css({overflowY: 'auto', height: 'auto'});
-    	    });
-    	    mask.fadeOut('slow', function()  {
-    			mask.remove();
-    		});				
+        },
+        
+        distroyPrintPreview: function() {
+            print_controls.fadeOut(100);
+            print_modal.animate({ top: $(window).scrollTop() - $(window).height(), opacity: 1}, 400, 'linear', function(){
+                print_modal.remove();
+                $('body').css({overflowY: 'auto', height: '100%'});
+            });
+            mask.fadeOut('slow', function()  {
+                mask.remove();
+            });             
 
-    		$(document).unbind("keydown.printPreview.mask");
-    		mask.unbind("click.printPreview.mask");
-    		$(window).unbind("resize.printPreview.mask");
-	    },
-	    
-    	/* -- Mask Functions --*/
-	    loadMask: function() {
-	        size = $.printPreview.sizeUpMask();
+            $(document).unbind("keydown.printPreview.mask");
+            mask.unbind("click.printPreview.mask");
+            $(window).unbind("resize.printPreview.mask");
+            //fix previous changes before going back to the page
+            $('#supportLine').html('<em style="color: #ffffff;">S<span style="font-size: 16px;">upport:</span> <strong>847-252-1611</strong></em>')
+            $('#logo>a>img').attr('src', '/images/thin_logo.png');   
+        },
+        
+        /* -- Mask Functions --*/
+        loadMask: function() {
+            size = $.printPreview.sizeUpMask();
             mask = $('<div id="print-modal-mask" />').appendTo($('body'));
-    	    mask.css({				
-    			position:           'absolute', 
-    			top:                0, 
-    			left:               0,
-    			width:              size[0],
-    			height:             size[1],
-    			display:            'none',
-    			opacity:            0,					 		
-    			zIndex:             9999,
-    			backgroundColor:    '#000'
-    		});
-	
-    		mask.css({display: 'block'}).fadeTo('400', 0.75);
-    		
+            mask.css({              
+                position:           'absolute', 
+                top:                0, 
+                left:               0,
+                width:              size[0],
+                height:             size[1],
+                display:            'none',
+                opacity:            0,                          
+                zIndex:             9999,
+                backgroundColor:    '#000'
+            });
+    
+            mask.css({display: 'block'}).fadeTo('400', 0.75);
+            
             $(window).bind("resize..printPreview.mask", function() {
-				$.printPreview.updateMaskSize();
-			});
-			
-			mask.bind("click.printPreview.mask", function(e)  {
-				$.printPreview.distroyPrintPreview();
-			});
-			
-			$(document).bind("keydown.printPreview.mask", function(e) {
-			    if (e.keyCode == 27) {  $.printPreview.distroyPrintPreview(); }
-			});
+                $.printPreview.updateMaskSize();
+            });
+            
+            mask.bind("click.printPreview.mask", function(e)  {
+                $.printPreview.distroyPrintPreview();
+            });
+            
+            $(document).bind("keydown.printPreview.mask", function(e) {
+                if (e.keyCode == 27) {  $.printPreview.distroyPrintPreview(); }
+            });
         },
     
         sizeUpMask: function() {
             if ($.browser.msie) {
-            	// if there are no scrollbars then use window.height
-            	var d = $(document).height(), w = $(window).height();
-            	return [
-            		window.innerWidth || 						// ie7+
-            		document.documentElement.clientWidth || 	// ie6  
-            		document.body.clientWidth, 					// ie6 quirks mode
-            		d - w < 20 ? w : d
-            	];
+                // if there are no scrollbars then use window.height
+                var d = $(document).height(), w = $(window).height();
+                return [
+                    window.innerWidth ||                        // ie7+
+                    document.documentElement.clientWidth ||     // ie6  
+                    document.body.clientWidth,                  // ie6 quirks mode
+                    d - w < 20 ? w : d
+                ];
             } else { return [$(document).width(), $(document).height()]; }
         },
     
         updateMaskSize: function() {
-    		var size = $.printPreview.sizeUpMask();
-    		mask.css({width: size[0], height: size[1]});
+            var size = $.printPreview.sizeUpMask();
+            mask.css({width: size[0], height: size[1]});
         }
     }
 })(jQuery);
