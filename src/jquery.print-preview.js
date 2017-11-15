@@ -93,7 +93,7 @@ jQuery.browser.msie = /msie/.test(navigator.userAgent.toLowerCase());
 
             // Disable scrolling
             $('body').css({overflowY: 'hidden', height: '100%'});
-            $('img', print_frame_ref).on.('load', function() {
+            $('img', print_frame_ref).on('load', function() {
                 print_frame.height($('body', print_frame.contents())[0].scrollHeight);
             });
             
